@@ -1,0 +1,6 @@
+{
+  "titulo": "Catálogo Cliente C",
+  "categorias": [
+    { "id": "avisos", "nome": "Avisos Gerais", "pasta": "avisos" }
+  ]
+}

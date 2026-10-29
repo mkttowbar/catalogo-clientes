@@ -1,0 +1,5 @@
+{
+  "a": { "titulo": "Catálogo Cliente A", "pasta": "clientes/a" },
+  "b": { "titulo": "Catálogo Cliente B", "pasta": "clientes/b" },
+  "c": { "titulo": "Catálogo Cliente C", "pasta": "clientes/c" }
+}

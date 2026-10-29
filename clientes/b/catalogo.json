@@ -1,0 +1,7 @@
+{
+  "titulo": "Catálogo Cliente B",
+  "categorias": [
+    { "id": "obras", "nome": "Sinalização de Obras", "pasta": "obras" },
+    { "id": "extintor", "nome": "Extintores", "pasta": "extintor" }
+  ]
+}

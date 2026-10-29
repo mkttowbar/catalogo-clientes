@@ -1,0 +1,7 @@
+{
+  "titulo": "Catálogo Cliente A",
+  "categorias": [
+    { "id": "salvamento", "nome": "Salvamentos", "pasta": "salvamento" },
+    { "id": "transito", "nome": "Trânsito", "pasta": "transito" }
+  ]
+}
