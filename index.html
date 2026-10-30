@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Catálogo de Placas Towbar — Multi-Cliente</title>
+<title>Catálogo Towbar — com cache e token</title>
 <style>
 /* Skip artifact shell — fixed styles served beside every artifact.
    Tokens, utilities and components (basecoat 1.0 markup, no CDN); artifacts
@@ -1033,742 +1033,666 @@ table.shell-table td.skip-table-empty { color: var(--text-muted); text-align: ce
 --accent-text: #A00D24;
 --accent-contrast: #ffffff;
 }
-body { background: #f6f6f4; }
+body { background: #f7f7f8; }
 .tw-header {
-background: #141414;
-color: #ffffff;
-border-radius: var(--radius);
-padding: 24px;
-box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+background: #111;
+color: #fff;
+border-bottom: 4px solid var(--accent);
 }
-.tw-header .muted { color: #d4d4d4; }
-.tw-header .eyebrow { background: rgba(200,16,46,0.25); color: #ffffff; border-color: transparent; }
-.tw-count { font-size: 2rem; font-weight: 700; color: #ffffff; line-height: 1; }
-.tw-select-grid {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-gap: 16px;
+.tw-header .muted { color: #d4d4d8; }
+.tw-header .eyebrow {
+background: rgba(200,16,46,0.2);
+color: #fff;
+border: 1px solid rgba(200,16,46,0.6);
 }
-.tw-big-btn {
-min-height: 130px;
-font-size: 1.1rem;
-font-weight: 700;
-display: flex;
-flex-direction: column;
-align-items: flex-start;
-justify-content: space-between;
-padding: 20px;
-text-align: left;
-border-radius: var(--radius);
-}
-.tw-big-btn span.sub { font-size: 0.85rem; font-weight: 400; opacity: 0.85; }
-.tabs-scroll { overflow-x: auto; }
-.tw-card {
-background: #ffffff;
-border: 1px solid var(--border);
-border-radius: var(--radius);
-box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-overflow: hidden;
-display: flex;
-flex-direction: column;
-transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-.tw-card:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(0,0,0,0.1); }
-.tw-card.is-selected { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(200,16,46,0.25); }
-.tw-card-img {
-width: 100%;
-aspect-ratio: 4 / 3;
-object-fit: contain;
-background: #fafafa;
-cursor: zoom-in;
-display: block;
-}
-.tw-card-body { padding: 12px; display: flex; flex-direction: column; gap: 10px; }
-.tw-code { font-size: 1.05rem; font-weight: 800; color: #141414; letter-spacing: 0.02em; }
-.tw-card-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.tw-qty { display: inline-flex; align-items: center; gap: 4px; }
-.tw-qty input {
-width: 56px;
-text-align: center;
-padding: 4px;
-}
-.tw-qty button {
-width: 32px; height: 32px;
-border: 1px solid var(--border);
-background: #ffffff;
-border-radius: 6px;
-font-weight: 700;
-cursor: pointer;
-color: #141414;
-}
-.tw-qty button:hover { border-color: var(--accent); color: var(--accent-text); }
-.tw-skeleton {
-background: linear-gradient(90deg, #ececec 25%, #f7f7f7 50%, #ececec 75%);
-background-size: 200% 100%;
-animation: tw-shimmer 1.2s infinite;
-border-radius: var(--radius);
-}
-@keyframes tw-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-.tw-grid {
+.tw-tabs-wrap { overflow-x: auto; }
+.tw-tabs-wrap .tabs nav { flex-wrap: nowrap; }
+.placa-grid {
 display: grid;
 grid-template-columns: repeat(2, minmax(0, 1fr));
 gap: 14px;
 }
-@media (min-width: 640px) { .tw-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-@media (min-width: 960px) { .tw-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-@media (min-width: 1200px) { .tw-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
-.tw-cat-block { margin-bottom: 28px; }
-.tw-empty {
-padding: 24px;
-border: 1px dashed var(--border);
-border-radius: var(--radius);
-text-align: center;
-color: var(--text-muted);
-background: #ffffff;
+@media (min-width: 640px) { .placa-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 960px) { .placa-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (min-width: 1200px) { .placa-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+.placa-card {
+background: #fff;
+border: 1px solid #e4e4e7;
+border-radius: 12px;
+box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+overflow: hidden;
+display: flex;
+flex-direction: column;
+transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
 }
-.tw-dock {
-position: sticky;
-bottom: 0;
-z-index: 30;
-background: #141414;
-color: #ffffff;
-border-radius: var(--radius);
-padding: 14px 18px;
-box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
-margin-top: 24px;
-}
-.tw-dock .muted { color: #cfcfcf; }
-.tw-dock .btn { background: var(--accent); color: #ffffff; }
-.tw-dock .btn[data-variant="outline"] { background: transparent; color: #ffffff; border-color: #ffffff; }
-.tw-lightbox {
-position: fixed;
-inset: 0;
-background: rgba(0,0,0,0.85);
-display: none;
+.placa-card:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(0,0,0,0.1); }
+.placa-card.selected { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(200,16,46,0.25); }
+.placa-thumb {
+width: 100%;
+aspect-ratio: 4 / 3;
+background: #fafafa;
+display: flex;
 align-items: center;
 justify-content: center;
-z-index: 100;
-padding: 20px;
-cursor: zoom-out;
+cursor: zoom-in;
+overflow: hidden;
 }
-.tw-lightbox.open { display: flex; }
-.tw-lightbox img { max-width: 92vw; max-height: 86vh; background: #fff; border-radius: var(--radius); padding: 12px; }
-.tw-lightbox .tw-lb-cap { position: absolute; bottom: 24px; left: 0; right: 0; text-align: center; color: #fff; font-weight: 700; font-size: 1.1rem; }
-.tw-banner {
-background: #fdecee;
-border: 1px solid #f5b5be;
-color: #7a0a1c;
-padding: 12px 16px;
-border-radius: var(--radius);
+.placa-thumb img { width: 100%; height: 100%; object-fit: contain; }
+.placa-body { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 8px; }
+.placa-code { font-weight: 700; font-size: 1rem; color: #111; letter-spacing: .02em; }
+.placa-controls { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.qty { display: inline-flex; align-items: center; gap: 4px; }
+.qty button {
+width: 30px; height: 30px; border-radius: 8px;
+border: 1px solid #d4d4d8; background: #fff; cursor: pointer;
+font-weight: 700; color: #111;
 }
-.tw-copied { color: #0f7a3c; font-weight: 700; }
-.tw-hidden { display: none !important; }
-details.tw-how summary { cursor: pointer; font-weight: 600; color: var(--text-muted); }
-@media print { .tw-dock, .tw-lightbox, .tw-how, .tw-toolbar-extra { display: none !important; } }
+.qty button:hover { border-color: var(--accent); color: var(--accent-text); }
+.qty input {
+width: 52px; height: 30px; text-align: center; border: 1px solid #d4d4d8;
+border-radius: 8px; font: inline-table; font-weight: 600;
+}
+.skeleton {
+background: linear-gradient(90deg, #ececee 25%, #f7f7f8 50%, #ececee 75%);
+background-size: 200% 100%;
+animation: shimmer 1.2s infinite;
+border-radius: 12px;
+min-height: 200px;
+}
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+.bottom-bar {
+position: sticky; bottom: 0; z-index: 30;
+background: #111; color: #fff;
+border-top: 3px solid var(--accent);
+padding: 12px 0;
+}
+.bottom-bar .muted { color: #d4d4d8; }
+.bottom-bar .btn[data-variant="outline"] { color: #fff; border-color: #fff; }
+.bottom-bar .btn[data-variant="outline"]:hover { background: rgba(255,255,255,0.1); }
+.lightbox-img { max-width: 100%; max-height: 70vh; display: block; margin: 0 auto; }
+.screen-center { min-height: 60vh; display: flex; align-items: center; justify-content: center; }
+.select-btn { min-width: 240px; padding: 22px 28px; font-size: 1.05rem; }
+.cache-note { background: #fff7e6; color: #7a4b00; border: 1px solid #f5d28a; border-radius: 8px; padding: 6px 10px; }
+.error-box { background: #fff1f2; color: #9f1239; border: 1px solid #fecdd3; border-radius: 10px; padding: 16px; }
+.tw-footer { background: #111; color: #d4d4d8; }
+.tw-footer a { color: #fff; }
+details summary { cursor: pointer; font-weight: 600; }
+@media print { .bottom-bar, .tw-footer, .tw-header .btn, .tabs nav { display: none !important; } }
 </style>
 </head>
 <body>
-<div class="shell-container shell-section">
 
-<!-- Tela de seleção -->
-<section id="view-select" class="tw-hidden">
-<header class="shell-hero mb-6">
-<span class="eyebrow">Towbar • Sinalização</span>
-<h1 class="text-3xl font-bold mt-2 mb-1">Selecione um catálogo</h1>
-<p class="muted text-sm">Escolha o cliente para abrir o catálogo de placas disponível.</p>
+<!-- ====================================================================
+CONFIGURAÇÃO DA FONTE DE DADOS (GitHub API)
+- GH_REPO: repositório "usuario/repositorio" que contém os catálogos
+- GH_BRANCH: branch de onde os dados são lidos
+- GH_TOKEN: token somente leitura. Se revogado, substitua aqui.
+  Deixe vazio ("") para acesso anônimo.
+- CACHE_TTL_MS: tempo de cache em milissegundos (10 min)
+==================================================================== -->
+<script>
+const GH_REPO = "mkttowbar/catalogo-clientes";
+const GH_BRANCH = "main";
+const GH_TOKEN = "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";
+const CACHE_TTL_MS = 10 * 60 * 1000;
+</script>
+
+<header class="tw-header">
+<div class="shell-container p-4">
+<div class="row between items-center gap-3">
+<div class="row items-center gap-3">
+<span class="eyebrow">Catálogo de Placas</span>
+</div>
+<div class="row items-center gap-2" id="headerActions"></div>
+</div>
+<div class="mt-3" id="headerInfo">
+<h1 class="text-2xl font-bold m-0" id="catTitulo">Selecione um catálogo</h1>
+<p class="muted text-sm mt-1 mb-0" id="catSubtitulo">Escolha o cliente para visualizar as placas de sinalização disponíveis.</p>
+<div class="row gap-2 mt-3" id="headerBadges"></div>
+</div>
+</div>
 </header>
-<div class="tw-select-grid">
-<button class="btn tw-big-btn" data-variant="default" data-cliente="a" type="button">
-Catálogo Cliente A
-<span class="sub">Placas de sinalização e identificação</span>
-</button>
-<button class="btn tw-big-btn" data-variant="default" data-cliente="b" type="button">
-Catálogo Cliente B
-<span class="sub">Linha industrial e segurança</span>
-</button>
-<button class="btn tw-big-btn" data-variant="default" data-cliente="c" type="button">
-Catálogo Cliente C
-<span class="sub">Ambientes comerciais e fachadas</span>
-</button>
+
+<main class="shell-container shell-section">
+<!-- Tela de seleção -->
+<section id="screenSelect" class="screen-center">
+<div class="stack gap-4 items-center" style="text-align:center;">
+<h2 class="text-xl font-bold m-0">Selecione um catálogo</h2>
+<p class="muted text-sm m-0">Cada cliente tem sua própria lista de placas, organizada por categoria.</p>
+<div class="row gap-3" style="justify-content:center;">
+<button class="btn select-btn" data-client="a">Catálogo Cliente A</button>
+<button class="btn select-btn" data-client="b">Catálogo Cliente B</button>
+<button class="btn select-btn" data-client="c">Catálogo Cliente C</button>
+</div>
 </div>
 </section>
 
-<!-- Tela de erro -->
-<section id="view-notfound" class="tw-hidden">
-<div class="tw-empty">
-<h2 class="text-xl font-bold mb-2">Catálogo não encontrado</h2>
-<p class="muted text-sm mb-4">O endereço informado não corresponde a nenhum catálogo cadastrado.</p>
-<button class="btn" type="button" id="btn-back-notfound">Voltar à seleção</button>
+<!-- Tela de não encontrado -->
+<section id="screenNotFound" class="screen-center" hidden>
+<div class="stack gap-3 items-center" style="text-align:center;">
+<h2 class="text-xl font-bold m-0">Catálogo não encontrado</h2>
+<p class="muted text-sm m-0">O endereço informado não corresponde a nenhum catálogo disponível.</p>
+<button class="btn" id="btnBackSelect">Voltar à seleção</button>
 </div>
 </section>
 
 <!-- Tela do catálogo -->
-<section id="view-catalog" class="tw-hidden">
-<header class="tw-header mb-4">
+<section id="screenCatalog" hidden>
+<div id="statusArea" class="mb-3"></div>
+
+<div class="panel p-3 mb-4">
 <div class="row between items-center gap-3">
-<div>
-<span class="eyebrow">Catálogo oficial</span>
-<h1 class="text-2xl font-bold mt-2 mb-1" id="cat-title" style="color:#fff;">Carregando catálogo…</h1>
-<p class="muted text-sm" id="cat-client">Cliente</p>
+<div class="grow">
+<label for="searchInput" class="text-sm font-medium">Buscar por código</label>
+<input class="input mt-1" id="searchInput" type="search" placeholder="Ex.: A001">
+<p class="muted text-xs mt-1 mb-0">A busca ignora maiúsculas e acentos.</p>
 </div>
-<div class="stack gap-1">
-<span class="muted text-xs">Total de placas</span>
-<span class="tw-count" id="cat-total">0</span>
-<span class="muted text-xs">Placas disponíveis neste catálogo</span>
-</div>
-</div>
-</header>
-
-<div id="api-banner" class="tw-banner tw-hidden mb-4"></div>
-
-<div class="row between items-center gap-3 mb-4 tw-toolbar-extra">
-<div class="field grow" style="max-width:360px;">
-<label for="search" class="text-xs muted">Buscar por código</label>
-<input class="input" id="search" type="search" placeholder="Ex.: A001" autocomplete="off">
-<span class="text-xs muted">A busca ignora acentos e maiúsculas.</span>
-</div>
-<div class="row gap-2">
-<span class="badge" data-variant="secondary" id="badge-selected">0 selecionadas</span>
-<button class="btn" data-variant="ghost" type="button" id="btn-reset-view">Limpar filtro</button>
-</div>
-</div>
-
-<nav class="tabs tabs-scroll mb-4" id="cat-tabs" role="tablist" aria-label="Categorias"></nav>
-
-<div id="content"></div>
-
-<div class="tw-dock" id="dock">
-<div class="row between items-center gap-3">
-<div class="row gap-3">
-<div>
-<div class="text-xs muted">Itens selecionados</div>
-<div class="text-lg font-bold" id="dock-items">0</div>
-</div>
-<div>
-<div class="text-xs muted">Total de peças</div>
-<div class="text-lg font-bold" id="dock-pieces">0</div>
-</div>
-</div>
-<div class="row gap-2">
-<span class="tw-copied tw-hidden" id="copied-msg">Copiado!</span>
-<button class="btn" type="button" id="btn-copy">Copiar lista para CorelDRAW</button>
-<button class="btn" data-variant="outline" type="button" id="btn-csv">Baixar CSV</button>
-<button class="btn" data-variant="ghost" type="button" id="btn-clear">Limpar seleção</button>
+<div class="text-right">
+<span class="badge" data-variant="secondary" id="badgeTotal">0 placas</span>
 </div>
 </div>
 </div>
 
-<details class="tw-how mt-6">
-<summary>Como adicionar placas</summary>
-<div class="panel p-4 mt-2">
-<p class="text-sm">Basta subir a imagem (.png, .jpg, .jpeg ou .webp) na pasta da categoria correspondente no repositório do GitHub. O nome do arquivo, sem extensão, será o código exibido no catálogo (ex.: A001.png → código A001). O catálogo é atualizado automaticamente na próxima visita.</p>
+<div class="tw-tabs-wrap mb-4">
+<div class="tabs" id="catTabs"></div>
 </div>
-</details>
+
+<div id="gridArea"></div>
 </section>
+</main>
 
-<footer class="shell-footer row between items-center mt-6 pt-4 text-xs muted" style="border-top:1px solid var(--border);">
-<span>Catálogo de Placas Towbar • Dados via API do GitHub</span>
-<a href="#" id="link-switch" class="muted" style="text-decoration:underline;">Trocar catálogo</a>
+<!-- Barra fixa inferior -->
+<div class="bottom-bar" id="bottomBar" hidden>
+<div class="shell-container row between items-center gap-3" style="flex-wrap:wrap;">
+<div>
+<div class="font-bold"><span id="selCount">0</span> itens selecionados</div>
+<div class="muted text-xs"><span id="selPecas">0</span> peças no total</div>
+</div>
+<div class="row gap-2" style="flex-wrap:wrap;">
+<button class="btn" id="btnCopy">Copiar lista para CorelDRAW</button>
+<button class="btn" data-variant="outline" id="btnCsv">Baixar CSV</button>
+<button class="btn" data-variant="outline" id="btnClear">Limpar seleção</button>
+</div>
+</div>
+</div>
+
+<!-- Lightbox -->
+<dialog class="dialog" id="lightbox">
+<div>
+<header>
+<h2 class="text-lg font-bold m-0" id="lbTitle">Placa</h2>
+</header>
+<section>
+<img class="lightbox-img" id="lbImg" alt="">
+</section>
+<footer class="row justify-end">
+<button class="btn" data-variant="outline" data-dialog-close>Fechar</button>
 </footer>
 </div>
+</dialog>
 
-<div class="tw-lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Visualização ampliada">
-<img id="lb-img" src="" alt="">
-<div class="tw-lb-cap" id="lb-cap"></div>
+<footer class="tw-footer mt-6">
+<div class="shell-container p-4">
+<details class="mb-3">
+<summary>Como adicionar placas</summary>
+<p class="text-sm mt-2 mb-0">
+Basta subir a imagem (PNG, JPG ou WEBP) na pasta da categoria no GitHub, fazer commit e push.
+Depois, clique em "Atualizar catálogo" nesta página para ver a nova placa. O nome do arquivo será o código da placa.
+</p>
+</details>
+<div class="row between items-center gap-3" style="flex-wrap:wrap;">
+<a href="#" id="linkTrocar">Trocar catálogo</a>
+<span class="text-xs">Catálogo de Placas Towbar • Dados via API do GitHub</span>
 </div>
+</div>
+</footer>
 
 <script>
-// =============================================================
-// CONFIGURAÇÃO — troque REPO e BRANCH para apontar outro repositório
-// =============================================================
-const REPO = "mkttowbar/catalogo-clientes"; // <-- trocar REPO aqui
-const BRANCH = "main";                       // <-- trocar BRANCH aqui
+(function () {
+"use strict";
 
-const IMG_EXT = /\.(png|jpg|jpeg|webp)$/i;
-
-// Dados de exemplo usados quando a API não está acessível (mock para funcionar de imediato)
-const MOCK_INDEX = {
-a: { titulo: "Catálogo Cliente A", pasta: "clientes/a" },
-b: { titulo: "Catálogo Cliente B", pasta: "clientes/b" },
-c: { titulo: "Catálogo Cliente C", pasta: "clientes/c" }
-};
-const MOCK_CATALOGS = {
-"clientes/a": {
-titulo: "Placas Cliente A — Sinalização Geral",
-categorias: [
-{ id: "sinal", nome: "Sinalização", pasta: "sinalizacao" },
-{ id: "seguranca", nome: "Segurança", pasta: "seguranca" }
-]
-},
-"clientes/b": {
-titulo: "Placas Cliente B — Linha Industrial",
-categorias: [
-{ id: "industrial", nome: "Industrial", pasta: "industrial" },
-{ id: "alerta", nome: "Alerta", pasta: "alerta" }
-]
-},
-"clientes/c": {
-titulo: "Placas Cliente C — Comercial",
-categorias: [
-{ id: "fachadas", nome: "Fachadas", pasta: "fachadas" }
-]
-}
-};
-const MOCK_FILES = {
-"clientes/a/sinalizacao": ["A001.png", "A002.png", "A003.png", "A004.png", "A005.png", "A006.png"],
-"clientes/a/seguranca": ["S101.png", "S102.png", "S103.png", "S104.png"],
-"clientes/b/industrial": ["B201.png", "B202.png", "B203.png", "B204.png", "B205.png"],
-"clientes/b/alerta": ["B301.png", "B302.png"],
-"clientes/c/fachadas": ["C401.png", "C402.png", "C403.png"]
-};
-
-// =============================================================
-// ESTADO
-// =============================================================
-let state = {
+// ---------- Estado global ----------
+const state = {
 slug: null,
-clienteInfo: null,
-catalogo: null,
-placas: [], // { codigo, categoriaId, url, catNome }
-filtroCategoria: "todas",
-busca: "",
-selecao: {} // { codigo: quantidade } persistido por cliente
+titulo: "",
+clienteNome: "",
+categorias: [],
+placasPorCategoria: {},
+activeTab: "__todas__",
+search: "",
+usingCacheFallback: false,
 };
+let selStore = null;
+let selections = {}; // { CODIGO: { qty, cat } }
+const counters = { requests: 0, cache: 0 };
 
-const $ = (s) => document.querySelector(s);
+const $ = (sel) => document.querySelector(sel);
 
-function normaliza(txt) {
-return (txt || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+// ---------- Utilitários ----------
+function normalize(s) {
+return String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+}
+function b64ToUtf8(b64) {
+const bin = atob(b64.replace(/\n/g, ""));
+const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
+return new TextDecoder("utf-8").decode(bytes);
+}
+function escapeHtml(s) {
+return String(s).replace(/[&<>"']/g, t => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[t]));
+}
+function showToast(msg, type) {
+if (window.skipUI && skipUI.toast) skipUI.toast(msg, type ? { type } : undefined);
+}
+function setStatus(html) { $("#statusArea").innerHTML = html || ""; }
+
+// ---------- Rede GitHub ----------
+class HttpError extends Error {
+constructor(status, msg) { super(msg); this.status = status; }
 }
 
-function mostraView(nome) {
-["select", "notfound", "catalog"].forEach(v => {
-$("#view-" + v).classList.toggle("tw-hidden", v !== nome);
-});
+async function ghFetch(path) {
+const url = `https://api.github.com/repos/${GH_REPO}/contents/${path}?ref=${GH_BRANCH}`;
+counters.requests++;
+const doFetch = async (useToken) => {
+const headers = { "Accept": "application/vnd.github+json" };
+if (useToken && GH_TOKEN) headers["Authorization"] = "Bearer " + GH_TOKEN;
+return fetch(url, { headers });
+};
+let res = await doFetch(true);
+if (res.status === 401 && GH_TOKEN) {
+console.warn("Token inválido/expirado: continuando sem autenticação.");
+res = await doFetch(false);
 }
-
-function setSlugUrl(slug) {
-const url = new URL(window.location.href);
-if (slug) url.searchParams.set("cliente", slug);
-else url.searchParams.delete("cliente");
-history.replaceState(null, "", url.toString());
-}
-
-// =============================================================
-// API GITHUB
-// =============================================================
-async function fetchJsonGitHub(path) {
-const url = `https://api.github.com/repos/${REPO}/contents/${path}?ref=${BRANCH}`;
-const res = await fetch(url, { headers: { Accept: "application/vnd.github+json" } });
-if (res.status === 403) throw { tipo: "limite", msg: "Limite de requisições da API do GitHub atingido. Aguarde alguns minutos e tente novamente." };
-if (!res.ok) throw { tipo: "nao_encontrado", msg: "Não encontrado" };
+if (!res.ok) throw new HttpError(res.status, `Erro ${res.status} em ${path}`);
 return res.json();
 }
 
-function decodeBase64Json(data) {
-const bin = atob((data.content || "").replace(/\n/g, ""));
-const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
-return JSON.parse(new TextDecoder("utf-8").decode(bytes));
+async function fetchJsonFile(path) {
+const data = await ghFetch(path);
+return JSON.parse(b64ToUtf8(data.content));
 }
 
-async function carregarIndice() {
-try {
-const data = await fetchJsonGitHub("clientes.json");
-return decodeBase64Json(data);
-} catch (e) {
-if (e && e.tipo === "limite") throw e;
-return MOCK_INDEX; // fallback de demonstração
-}
-}
+async function fetchCatalogFromApi(slug) {
+const mapa = await fetchJsonFile("clientes.json");
+const entry = mapa[slug];
+if (!entry) throw new HttpError(404, "cliente não encontrado");
+const pasta = entry.pasta;
+const cat = await fetchJsonFile(`${pasta}/catalogo.json`);
+const categorias = cat.categorias || [];
+const placasPorCategoria = {};
 
-async function carregarCatalogo(pasta) {
+for (const c of categorias) {
+placasPorCategoria[c.id] = [];
 try {
-const data = await fetchJsonGitHub(`${pasta}/catalogo.json`);
-return decodeBase64Json(data);
-} catch (e) {
-if (e && e.tipo === "limite") throw e;
-return MOCK_CATALOGS[pasta] || null;
-}
-}
-
-async function listarArquivosCategoria(pasta, catPasta) {
-try {
-const data = await fetchJsonGitHub(`${pasta}/${catPasta}`);
-if (!Array.isArray(data)) return [];
-return data
-.filter(f => f.type === "file" && IMG_EXT.test(f.name))
+const files = await ghFetch(`${pasta}/${c.pasta}`);
+if (!Array.isArray(files)) continue;
+placasPorCategoria[c.id] = files
+.filter(f => f.type === "file" && /\.(png|jpe?g|webp)$/i.test(f.name))
 .map(f => ({
-codigo: f.name.replace(IMG_EXT, ""),
-url: f.download_url || `https://raw.githubusercontent.com/${REPO}/${BRANCH}/${f.path}`
+codigo: f.name.replace(/\.[^.]+$/, ""),
+url: f.download_url || `https://raw.githubusercontent.com/${GH_REPO}/${GH_BRANCH}/${f.path}`,
 }));
 } catch (e) {
-if (e && e.tipo === "limite") throw e;
-const key = `${pasta}/${catPasta}`;
-return (MOCK_FILES[key] || []).map(n => ({
-codigo: n.replace(IMG_EXT, ""),
-url: `https://img.usecurling.com/p/400/300?q=road%20sign%20${encodeURIComponent(n.replace(IMG_EXT, ""))}`
-}));
+if (e.status === 404) placasPorCategoria[c.id] = [];
+else throw e;
 }
 }
-
-// =============================================================
-// CARREGAMENTO DO CATÁLOGO
-// =============================================================
-function mostraSkeleton() {
-$("#cat-title").textContent = "Carregando catálogo…";
-$("#cat-client").textContent = "Buscando dados…";
-$("#cat-total").textContent = "…";
-$("#cat-tabs").innerHTML = "";
-$("#content").innerHTML = `
-<div class="tw-grid">
-${Array.from({ length: 8 }).map(() => `<div class="tw-skeleton" style="height:200px"></div>`).join("")}
-</div>`;
+return {
+ts: Date.now(),
+titulo: cat.titulo || "Catálogo",
+clienteNome: entry.titulo || ("Cliente " + slug.toUpperCase()),
+categorias,
+placasPorCategoria,
+};
 }
 
-async function abrirCliente(slug) {
-state.slug = slug;
-mostraView("catalog");
-mostraSkeleton();
-$("#api-banner").classList.add("tw-hidden");
+// ---------- Cache ----------
+function cacheKey(slug) { return "towbar_cat_cache_" + slug; }
+function readCache(slug) {
+try { return JSON.parse(localStorage.getItem(cacheKey(slug))); } catch { return null; }
+}
+function writeCache(slug, data) {
+try { localStorage.setItem(cacheKey(slug), JSON.stringify(data)); } catch {}
+}
+
+async function loadCatalog(slug, force) {
+const cached = readCache(slug);
+const fresh = cached && (Date.now() - cached.ts) < CACHE_TTL_MS;
+if (!force && fresh) {
+counters.cache++;
+logStats();
+return { data: cached, fromCache: true, stale: false };
+}
 try {
-const indice = await carregarIndice();
-const info = indice[slug];
-if (!info) {
-mostraView("notfound");
-setSlugUrl(null);
-return;
+const data = await fetchCatalogFromApi(slug);
+writeCache(slug, data);
+logStats();
+return { data, fromCache: false, stale: false };
+} catch (err) {
+logStats();
+if (cached) {
+counters.cache++;
+return { data: cached, fromCache: true, stale: true, error: err };
 }
-state.clienteInfo = info;
-const catalogo = await carregarCatalogo(info.pasta);
-state.catalogo = catalogo || { titulo: info.titulo, categorias: [] };
-state.placas = [];
-for (const cat of state.catalogo.categorias || []) {
-let arquivos = [];
-try {
-arquivos = await listarArquivosCategoria(info.pasta, cat.pasta);
-} catch (e) {
-if (e && e.tipo === "limite") throw e;
-}
-arquivos.forEach(a => state.placas.push({ codigo: a.codigo, url: a.url, categoriaId: cat.id, catNome: cat.nome }));
-cat._count = arquivos.length;
-}
-carregarSelecao();
-state.filtroCategoria = "todas";
-state.busca = "";
-$("#search").value = "";
-renderCabecalho();
-renderTabs();
-renderConteudo();
-renderDock();
-} catch (e) {
-mostraView("catalog");
-$("#content").innerHTML = "";
-const b = $("#api-banner");
-b.textContent = e && e.msg ? e.msg : "Não foi possível carregar o catálogo.";
-b.classList.remove("tw-hidden");
+throw err;
 }
 }
 
-function renderCabecalho() {
-$("#cat-title").textContent = state.catalogo.titulo;
-$("#cat-client").textContent = `Cliente: ${state.clienteInfo.titulo} • Slug "${state.slug.toUpperCase()}"`;
-$("#cat-total").textContent = state.placas.length;
+function logStats() {
+console.info(`[Towbar] Requisições à API: ${counters.requests} | Respostas do cache: ${counters.cache}`);
+}
+
+// ---------- Seleções ----------
+function selKey(slug) { return "towbar_sel_" + slug; }
+function loadSelections(slug) {
+try { return JSON.parse(localStorage.getItem(selKey(slug))) || {}; } catch { return {}; }
+}
+function saveSelections() {
+try { localStorage.setItem(selKey(state.slug), JSON.stringify(selections)); } catch {}
+}
+
+// ---------- Renderização ----------
+function renderHeader() {
+const data = state;
+$("#catTitulo").textContent = data.titulo || "Catálogo";
+$("#catSubtitulo").textContent = `Catálogo de ${data.clienteNome} — placas de sinalização Towbar.`;
+const total = countAll();
+$("#headerBadges").innerHTML =
+`<span class="badge" data-variant="secondary">Cliente: ${escapeHtml(data.clienteNome)}</span>` +
+`<span class="badge" data-variant="outline">${total} placas</span>` +
+`<span class="badge" data-variant="outline">${state.categorias.length} categorias</span>`;
+$("#headerActions").innerHTML =
+`<button class="btn" data-variant="secondary" data-size="sm" id="btnRefresh" title="Atualizar catálogo">&#x21bb; Atualizar catálogo</button>`;
+$("#btnRefresh").addEventListener("click", () => refresh());
+$("#badgeTotal").textContent = `${total} placas`;
+}
+
+function countAll() {
+return Object.values(state.placasPorCategoria).reduce((a, l) => a + l.length, 0);
 }
 
 function renderTabs() {
-const nav = $("#cat-tabs");
-const cats = state.catalogo.categorias || [];
-const tabs = [{ id: "todas", nome: "Todas" }, ...cats.map(c => ({ id: c.id, nome: c.nome }))];
-nav.innerHTML = tabs.map(t => `
-<button type="button" role="tab" data-cat="${t.id}" aria-selected="${t.id === state.filtroCategoria}">${escapeHtml(t.nome)}</button>
-`).join("");
-nav.querySelectorAll("button[data-cat]").forEach(btn => {
+const tabs = [{ id: "__todas__", nome: "Todas" }, ...state.categorias.map(c => ({ id: c.id, nome: c.nome }))];
+const nav = tabs.map(t =>
+`<button type="button" role="tab" data-tab="${escapeHtml(t.id)}" aria-controls="gridArea" aria-selected="${t.id === state.activeTab}">${escapeHtml(t.nome)}</button>`
+).join("");
+$("#catTabs").innerHTML = `<nav role="tablist" aria-orientation="horizontal">${nav}</nav>`;
+$("#catTabs").querySelectorAll("[role=tab]").forEach(btn => {
 btn.addEventListener("click", () => {
-state.filtroCategoria = btn.dataset.cat;
-nav.querySelectorAll("button[data-cat]").forEach(b => b.setAttribute("aria-selected", b === btn ? "true" : "false"));
-renderConteudo();
+state.activeTab = btn.dataset.tab;
+renderTabs();
+renderGrid();
 });
 });
 }
 
-// =============================================================
-// RENDERIZAÇÃO DAS PLACAS
-// =============================================================
-function placasFiltradas() {
-const termo = normaliza(state.busca);
-return state.placas.filter(p => {
-if (state.filtroCategoria !== "todas" && p.categoriaId !== state.filtroCategoria) return false;
-if (termo && !normaliza(p.codigo).includes(termo)) return false;
-return true;
-});
+function visiblePlacas() {
+const term = normalize(state.search);
+const sources = state.activeTab === "__todas__"
+? state.categorias.map(c => ({ cat: c, list: state.placasPorCategoria[c.id] || [] }))
+: state.categorias.filter(c => c.id === state.activeTab).map(c => ({ cat: c, list: state.placasPorCategoria[c.id] || [] }));
+const out = [];
+for (const s of sources) {
+for (const p of s.list) {
+if (!term || normalize(p.codigo).includes(term)) out.push({ ...p, cat: s.cat });
+}
+}
+return out;
 }
 
-function renderConteudo() {
-const cont = $("#content");
-const cats = state.catalogo.categorias || [];
-if (cats.length === 0) {
-cont.innerHTML = `<div class="tw-empty">Nenhuma placa cadastrada nesta categoria</div>`;
+function renderGrid() {
+const area = $("#gridArea");
+if (state.activeTab !== "__todas__") {
+const cat = state.categorias.find(c => c.id === state.activeTab);
+if (cat && (state.placasPorCategoria[cat.id] || []).length === 0) {
+area.innerHTML = `<div class="panel p-6 text-center muted">Nenhuma placa cadastrada nesta categoria.</div>`;
 return;
 }
-const visiveis = state.filtroCategoria === "todas" ? cats : cats.filter(c => c.id === state.filtroCategoria);
-let html = "";
-visiveis.forEach(cat => {
-const itens = state.placas.filter(p => p.categoriaId === cat.id && (!state.busca || normaliza(p.codigo).includes(normaliza(state.busca))));
-html += `<div class="tw-cat-block">`;
-html += `<div class="row between items-center mb-2"><h2 class="text-lg font-bold m-0">${escapeHtml(cat.nome)}</h2><span class="badge" data-variant="outline">${itens.length} placa(s)</span></div>`;
-html += `<p class="muted text-xs mb-3">Clique na imagem para ampliar. Marque a placa e ajuste a quantidade.</p>`;
-if (itens.length === 0) {
-html += `<div class="tw-empty">Nenhuma placa cadastrada nesta categoria</div>`;
-} else {
-html += `<div class="tw-grid">${itens.map(cardHtml).join("")}</div>`;
 }
-html += `</div>`;
-});
-cont.innerHTML = html;
-bindCards();
+const list = visiblePlacas();
+if (!list.length) {
+area.innerHTML = `<div class="panel p-6 text-center muted">Nenhuma placa encontrada para esta busca.</div>`;
+return;
+}
+area.innerHTML = `<div class="placa-grid">${list.map(cardHtml).join("")}</div>`;
+bindCards(area);
 }
 
 function cardHtml(p) {
-const sel = state.selecao[p.codigo];
-const marcado = sel && sel > 0;
-const qtd = marcado ? sel : 1;
+const sel = selections[p.codigo];
+const qty = sel ? sel.qty : 0;
+const checked = qty > 0 ? "checked" : "";
+const cls = qty > 0 ? "placa-card selected" : "placa-card";
 return `
-<article class="tw-card ${marcado ? "is-selected" : ""}" data-codigo="${escapeHtml(p.codigo)}">
-<img class="tw-card-img" src="${escapeHtml(p.url)}" alt="Placa ${escapeHtml(p.codigo)}" loading="lazy" data-zoom="1">
-<div class="tw-card-body">
-<div class="row between items-center">
-<span class="tw-code">${escapeHtml(p.codigo)}</span>
-<label class="row gap-1 text-xs" style="cursor:pointer;">
-<input type="checkbox" class="chk" ${marcado ? "checked" : ""} aria-label="Selecionar ${escapeHtml(p.codigo)}"> Selecionar
-</label>
+<article class="${cls}" data-code="${escapeHtml(p.codigo)}" data-cat="${escapeHtml(p.cat.id)}" data-url="${escapeHtml(p.url)}">
+<div class="placa-thumb" data-zoom="1" title="Ampliar">
+<img loading="lazy" src="${escapeHtml(p.url)}" alt="Placa ${escapeHtml(p.codigo)}">
 </div>
-<div class="tw-card-foot">
-<span class="text-xs muted">Quantidade</span>
-<div class="tw-qty">
-<button type="button" data-act="-" aria-label="Diminuir">−</button>
-<input type="number" min="0" value="${marcado ? sel : 0}" aria-label="Quantidade de ${escapeHtml(p.codigo)}">
-<button type="button" data-act="+" aria-label="Aumentar">+</button>
+<div class="placa-body">
+<div class="row between items-center">
+<span class="placa-code">${escapeHtml(p.codigo)}</span>
+<input type="checkbox" class="chk" aria-label="Selecionar ${escapeHtml(p.codigo)}" ${checked}>
+</div>
+<div class="placa-controls">
+<div class="qty">
+<button type="button" data-act="minus" aria-label="Diminuir">−</button>
+<input type="number" min="0" value="${qty}" aria-label="Quantidade">
+<button type="button" data-act="plus" aria-label="Aumentar">+</button>
 </div>
 </div>
 </div>
 </article>`;
 }
 
-function bindCards() {
-document.querySelectorAll(".tw-card").forEach(card => {
-const codigo = card.dataset.codigo;
+function bindCards(root) {
+root.querySelectorAll(".placa-card").forEach(card => {
+const code = card.dataset.code;
+const cat = card.dataset.cat;
 const chk = card.querySelector(".chk");
-const input = card.querySelector("input[type=number]");
-const img = card.querySelector(".tw-card-img");
+const numInput = card.querySelector("input[type=number]");
 
-chk.addEventListener("change", () => {
-if (chk.checked) {
-state.selecao[codigo] = Math.max(1, parseInt(input.value, 10) || 1);
-} else {
-delete state.selecao[codigo];
-}
-atualizaCardEDock(card, codigo);
-});
+const apply = (qty) => {
+qty = Math.max(0, Math.floor(Number(qty) || 0));
+if (qty === 0) delete selections[code];
+else selections[code] = { qty, cat };
+saveSelections();
+card.classList.toggle("selected", qty > 0);
+chk.checked = qty > 0;
+numInput.value = qty;
+updateBottomBar();
+};
 
-card.querySelectorAll("button[data-act]").forEach(btn => {
-btn.addEventListener("click", () => {
-let v = parseInt(input.value, 10) || 0;
-v = btn.dataset.act === "+" ? v + 1 : Math.max(0, v - 1);
-input.value = v;
-definirQuantidade(codigo, v);
-atualizaCardEDock(card, codigo);
-});
-});
-
-input.addEventListener("input", () => {
-const v = Math.max(0, parseInt(input.value, 10) || 0);
-definirQuantidade(codigo, v);
-atualizaCardEDock(card, codigo);
-});
-
-img.addEventListener("click", () => abrirLightbox(codigo, img.src));
+chk.addEventListener("change", () => apply(chk.checked ? (selections[code]?.qty || 1) : 0));
+card.querySelector("[data-act=minus]").addEventListener("click", () => apply((selections[code]?.qty || 0) - 1));
+card.querySelector("[data-act=plus]").addEventListener("click", () => apply((selections[code]?.qty || 0) + 1));
+numInput.addEventListener("change", () => apply(numInput.value));
+card.querySelector("[data-zoom]").addEventListener("click", () => openLightbox(card.dataset.url, code));
 });
 }
 
-function definirQuantidade(codigo, v) {
-if (v > 0) state.selecao[codigo] = v;
-else delete state.selecao[codigo];
-salvarSelecao();
+function updateBottomBar() {
+const codes = Object.keys(selections);
+const pecas = codes.reduce((a, c) => a + selections[c].qty, 0);
+$("#selCount").textContent = codes.length;
+$("#selPecas").textContent = pecas;
+$("#bottomBar").hidden = codes.length === 0 && state.categorias.length === 0;
 }
 
-function atualizaCardEDock(card, codigo) {
-const qtd = state.selecao[codigo] || 0;
-card.classList.toggle("is-selected", qtd > 0);
-card.querySelector(".chk").checked = qtd > 0;
-card.querySelector("input[type=number]").value = qtd;
-renderDock();
+function openLightbox(url, code) {
+$("#lbImg").src = url;
+$("#lbImg").alt = "Placa " + code;
+$("#lbTitle").textContent = "Placa " + code;
+$("#lightbox").showModal();
 }
 
-// =============================================================
-// DOCK, CÓPIA, CSV, SELEÇÃO
-// =============================================================
-function renderDock() {
-const codigos = Object.keys(state.selecao);
-const total = codigos.reduce((s, c) => s + state.selecao[c], 0);
-$("#dock-items").textContent = codigos.length;
-$("#dock-pieces").textContent = total;
-$("#badge-selected").textContent = `${codigos.length} selecionadas`;
+// ---------- Ações da barra ----------
+function buildCorelText() {
+const lines = [];
+for (const code of Object.keys(selections)) {
+for (let i = 0; i < selections[code].qty; i++) lines.push(code);
+}
+return lines.join("\n");
 }
 
-function linhasCorel() {
-const linhas = [];
-Object.keys(state.selecao).forEach(codigo => {
-for (let i = 0; i < state.selecao[codigo]; i++) linhas.push(codigo);
-});
-return linhas.join("\n");
-}
-
-function mostraCopiado() {
-const m = $("#copied-msg");
-m.classList.remove("tw-hidden");
-setTimeout(() => m.classList.add("tw-hidden"), 2000);
-}
-
-function copiarTexto(texto) {
-if (navigator.clipboard && navigator.clipboard.writeText) {
-return navigator.clipboard.writeText(texto);
-}
-return new Promise((resolve, reject) => {
+async function copyText(text) {
+try {
+await navigator.clipboard.writeText(text);
+} catch {
 const ta = document.createElement("textarea");
-ta.value = texto;
+ta.value = text;
 ta.style.position = "fixed";
 ta.style.opacity = "0";
 document.body.appendChild(ta);
 ta.select();
-try {
-document.execCommand("copy") ? resolve() : reject();
-} catch (e) { reject(e); }
-document.body.removeChild(ta);
-});
+document.execCommand("copy");
+ta.remove();
+}
 }
 
-function baixarCSV() {
-const linhas = ["CODIGO;QUANTIDADE"];
-Object.keys(state.selecao).forEach(c => linhas.push(`${c};${state.selecao[c]}`));
-const conteudo = "\uFEFF" + linhas.join("\r\n");
-const blob = new Blob([conteudo], { type: "text/csv;charset=utf-8" });
-const url = URL.createObjectURL(blob);
+function setupBarActions() {
+$("#btnCopy").addEventListener("click", async () => {
+const txt = buildCorelText();
+if (!txt) { showToast("Nenhuma placa selecionada.", "error"); return; }
+await copyText(txt);
+const btn = $("#btnCopy");
+const old = btn.textContent;
+btn.textContent = "Copiado!";
+setTimeout(() => btn.textContent = old, 1600);
+showToast("Lista copiada para a área de transferência.", "success");
+});
+
+$("#btnCsv").addEventListener("click", () => {
+const codes = Object.keys(selections);
+if (!codes.length) { showToast("Nenhuma placa selecionada.", "error"); return; }
+const rows = ["CODIGO;QUANTIDADE", ...codes.map(c => `${c};${selections[c].qty}`)];
+const blob = new Blob(["\uFEFF" + rows.join("\n")], { type: "text/csv;charset=utf-8" });
 const a = document.createElement("a");
-a.href = url;
-a.download = `${state.slug}-selecao.csv`;
+a.href = URL.createObjectURL(blob);
+a.download = `towbar_${state.slug}_selecao.csv`;
 document.body.appendChild(a);
 a.click();
-document.body.removeChild(a);
-setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
-
-function selecaoKey() {
-return `towbar_selecao_${state.slug}`;
-}
-function salvarSelecao() {
-try { localStorage.setItem(selecaoKey(), JSON.stringify(state.selecao)); } catch (e) {}
-}
-function carregarSelecao() {
-try {
-const raw = localStorage.getItem(selecaoKey());
-state.selecao = raw ? JSON.parse(raw) : {};
-} catch (e) {
-state.selecao = {};
-}
-}
-
-// =============================================================
-// LIGHTBOX
-// =============================================================
-function abrirLightbox(codigo, src) {
-$("#lb-img").src = src;
-$("#lb-img").alt = `Placa ${codigo} ampliada`;
-$("#lb-cap").textContent = codigo;
-$("#lightbox").classList.add("open");
-}
-function fecharLightbox() {
-$("#lightbox").classList.remove("open");
-}
-
-// =============================================================
-// ROTEAMENTO
-// =============================================================
-function escapeHtml(s) {
-return String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-}
-
-function irSelecao() {
-state.slug = null;
-setSlugUrl(null);
-mostraView("select");
-}
-
-function rotear() {
-const params = new URLSearchParams(window.location.search);
-const slug = (params.get("cliente") || "").toLowerCase();
-if (!slug) { irSelecao(); return; }
-abrirCliente(slug);
-}
-
-// =============================================================
-// EVENTOS
-// =============================================================
-document.addEventListener("DOMContentLoaded", () => {
-document.querySelectorAll("button[data-cliente]").forEach(btn => {
-btn.addEventListener("click", () => {
-const slug = btn.dataset.cliente;
-setSlugUrl(slug);
-abrirCliente(slug);
-});
+a.remove();
+setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+showToast("CSV gerado com sucesso.", "success");
 });
 
-$("#btn-back-notfound").addEventListener("click", irSelecao);
-$("#link-switch").addEventListener("click", (e) => { e.preventDefault(); irSelecao(); });
-
-$("#search").addEventListener("input", (e) => {
-state.busca = e.target.value;
-renderConteudo();
+$("#btnClear").addEventListener("click", () => {
+if (!Object.keys(selections).length) { showToast("A seleção já está vazia."); return; }
+if (!confirm("Limpar toda a seleção?")) return;
+selections = {};
+saveSelections();
+renderGrid();
+updateBottomBar();
+showToast("Seleção limpa.");
 });
-$("#btn-reset-view").addEventListener("click", () => {
-state.busca = "";
-state.filtroCategoria = "todas";
-$("#search").value = "";
+}
+
+// ---------- Fluxo principal ----------
+function showScreen(name) {
+$("#screenSelect").hidden = name !== "select";
+$("#screenNotFound").hidden = name !== "notfound";
+$("#screenCatalog").hidden = name !== "catalog";
+$("#bottomBar").hidden = name !== "catalog";
+if (name !== "catalog") {
+$("#headerActions").innerHTML = "";
+$("#headerBadges").innerHTML = "";
+$("#catTitulo").textContent = "Selecione um catálogo";
+$("#catSubtitulo").textContent = "Escolha o cliente para visualizar as placas de sinalização disponíveis.";
+}
+}
+
+function setUrlSlug(slug) {
+const url = new URL(window.location.href);
+if (slug) url.searchParams.set("cliente", slug);
+else url.searchParams.delete("cliente");
+history.replaceState(null, "", url.toString());
+}
+
+function getSlugFromUrl() {
+return new URLSearchParams(window.location.search).get("cliente");
+}
+
+function showSkeleton() {
+$("#gridArea").innerHTML = `<div class="placa-grid">${Array.from({ length: 10 }).map(() => `<div class="skeleton"></div>`).join("")}</div>`;
+}
+
+async function openCatalog(slug, force) {
+state.slug = slug;
+state.activeTab = "__todas__";
+state.search = "";
+$("#searchInput").value = "";
+selections = loadSelections(slug);
+showScreen("catalog");
+setStatus("");
+showSkeleton();
 renderTabs();
-renderConteudo();
-});
-
-$("#btn-copy").addEventListener("click", async () => {
-const texto = linhasCorel();
-if (!texto) { skipUI.toast("Selecione ao menos uma placa.", { type: "error" }); return; }
 try {
-await copiarTexto(texto);
-mostraCopiado();
-skipUI.toast("Lista copiada para o CorelDRAW.", { type: "success" });
-} catch (e) {
-skipUI.toast("Não foi possível copiar automaticamente.", { type: "error" });
+const { data, fromCache, stale } = await loadCatalog(slug, force);
+state.titulo = data.titulo;
+state.clienteNome = data.clienteNome;
+state.categorias = data.categorias;
+state.placasPorCategoria = data.placasPorCategoria;
+renderHeader();
+renderTabs();
+renderGrid();
+updateBottomBar();
+if (stale) {
+setStatus(`<div class="cache-note text-sm">Exibindo dados em cache. Não foi possível atualizar agora.</div>`);
+} else if (fromCache) {
+setStatus(`<div class="muted text-xs">Dados carregados do cache local (atualizam a cada 10 minutos).</div>`);
 }
-});
+} catch (err) {
+if (err.status === 404) {
+showScreen("notfound");
+setUrlSlug(null);
+return;
+}
+const msg = err.status === 403
+? "Limite de requisições do GitHub atingido. Tente novamente em alguns minutos ou clique em Atualizar catálogo."
+: "Não foi possível carregar o catálogo. Verifique sua conexão e tente novamente.";
+setStatus(`<div class="error-box text-sm">${msg}</div>`);
+$("#gridArea").innerHTML = "";
+}
+}
 
-$("#btn-csv").addEventListener("click", () => {
-if (Object.keys(state.selecao).length === 0) { skipUI.toast("Nada selecionado para exportar.", { type: "error" }); return; }
-baixarCSV();
-skipUI.toast("Arquivo CSV gerado.", { type: "success" });
-});
+function refresh() {
+if (!state.slug) return;
+showToast("Atualizando catálogo...");
+openCatalog(state.slug, true);
+}
 
-$("#btn-clear").addEventListener("click", () => {
-state.selecao = {};
-salvarSelecao();
-renderConteudo();
-renderDock();
-skipUI.toast("Seleção limpa.");
-});
+function goSelect() {
+state.slug = null;
+setUrlSlug(null);
+showScreen("select");
+}
 
-$("#lightbox").addEventListener("click", fecharLightbox);
-document.addEventListener("keydown", (e) => { if (e.key === "Escape") fecharLightbox(); });
-
-window.addEventListener("popstate", rotear);
-rotear();
+function init() {
+document.querySelectorAll("[data-client]").forEach(btn => {
+btn.addEventListener("click", () => {
+const slug = btn.dataset.client;
+setUrlSlug(slug);
+openCatalog(slug, false);
 });
+});
+$("#btnBackSelect").addEventListener("click", goSelect);
+$("#linkTrocar").addEventListener("click", (e) => { e.preventDefault(); goSelect(); });
+$("#searchInput").addEventListener("input", (e) => {
+state.search = e.target.value;
+renderGrid();
+});
+setupBarActions();
+
+const slug = getSlugFromUrl();
+if (slug) {
+openCatalog(slug, false);
+} else {
+showScreen("select");
+}
+}
+
+document.addEventListener("DOMContentLoaded", init);
+})();
 </script>
 </body>
 </html>
